@@ -1,29 +1,39 @@
 # Module to parse and read an element library into a single data structure
 
+#======================================================================
+# Function used to parse a line into separate values
+#======================================================================
+
+def grab_line_info(line):
+    line_info_list = line.split()
+    return line_info_list
+
 #=============================================================
 # Group of Functions Used to Parse First Line of Each Block
 #=============================================================
 def grab_chem_symbol(line):
-    chem_sym = line[0:2]
-    chem_sym = chem_sym.strip()
+    line_info = grab_line_info(line)
+    chem_sym = line_info[0]
     return chem_sym
 
 def grab_molar_mass(line):
-    molar_mass = line[8:20]
+    line_info = grab_line_info(line)
+    molar_mass = line_info[1]
     return molar_mass
 
 def grab_z_number(line):
-    element_z = line[22:24]
-    element_z = element_z.strip()
+    line_info = grab_line_info(line)
+    element_z = line_info[2]
     return element_z
 
 def grab_density(line):
-    density_STP = line[30:42]
+    line_info = grab_line_info(line)
+    density_STP = line_info[3]
     return density_STP
 
 def grab_num_of_iso(line):
-    line_len = len(line.strip())
-    num_of_iso = line[line_len-1:line_len]
+    line_info = grab_line_info(line)
+    num_of_iso = line_info[4]
     return num_of_iso
 
 #===================================================================
@@ -39,17 +49,16 @@ def parse_first_line(line):
     
     return [chem_sym, molar_mass, element_z, density_STP, num_of_iso]
 
+
 #===================================================================
 # Function that parses the isotopic abundance information from rest
 # of the block.
 #===================================================================
 
 def parse_isotopic_abund(line):
-    line = line.strip()
-    iso_mass_num = line[0:3]
-    iso_mass_num = iso_mass_num.strip()
-
-    iso_abund = line[-12:]
+    line_info = grab_line_info(line)
+    iso_mass_num = line_info[0]
+    iso_abund = line_info[1]
 
     return [iso_mass_num, iso_abund]
 
@@ -62,9 +71,14 @@ def parse_isotopic_abund(line):
 
 def elem_lib_from_file(filename, input_dict):
     import re
-
+    from utility_funcs import remove_comments, skip_blank_lines
+    
     for line in filename:
-        if re.match("[a-z]",line[0]):
+        line = remove_comments(line)
+        if skip_blank_lines(line) == True:
+            continue
+
+        elif re.match("[a-z]",line[0]):
             isotope_data = {}
             element_info = parse_first_line(line)
 

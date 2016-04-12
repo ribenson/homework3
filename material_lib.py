@@ -45,10 +45,19 @@ def parse_elem_frac(line):
 #======================================================================
 
 def create_mat_lib(filename, matlib_dict):
+    import re
+    from utility_funcs import remove_comments, skip_blank_lines
+
     input_library = open(filename)
 
     for line in input_library:
-        if line[0] != ' ':
+        line = remove_comments(line)
+        if skip_blank_lines(line) == True:
+            continue
+
+        elif line.isspace() == True:  # accounts for if line is blank
+            continue
+        elif line[0] != ' ':
             element_data = {}
             mat_name, density_stp, num_of_elem= parse_first_line(line)
 
