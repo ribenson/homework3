@@ -21,7 +21,7 @@ def parse_first_line(line):
     density_stp = line_info_list[1]
     num_of_elem = line_info_list[2]
 
-    return mat_name, density_stp, num_of_elem
+    return [mat_name, density_stp, num_of_elem]
 
 
 
@@ -37,7 +37,7 @@ def parse_elem_frac(line):
     mass_frac = single_elem_info[1]
     atom_num = single_elem_info[2]
 
-    return chem_symbol, mass_frac, atom_num
+    return [chem_symbol, mass_frac, atom_num]
     
 
 #======================================================================
@@ -45,4 +45,18 @@ def parse_elem_frac(line):
 #======================================================================
 
 def create_mat_lib(filename, matlib_dict):
-    
+    input_library = open(filename)
+
+    for line in input_library:
+        if line[0] != ' ':
+            element_data = {}
+            mat_name, density_stp, num_of_elem= parse_first_line(line)
+
+        elif line[0] == ' ':
+          chem_symbol, mass_frac, atom_num = parse_elem_frac(line)
+          
+          element_data[chem_symbol] = {'mass fraction':mass_frac, 'atomic number':atom_num}
+
+        matlib_dict[mat_name] = {'density at STP': density_stp, 'number of elements in material': num_of_elem, 'elemental info': element_data}
+
+    return matlib_dict
