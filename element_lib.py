@@ -75,6 +75,7 @@ def elem_lib_from_file(filename, input_dict):
     
     for line in filename:
         line = remove_comments(line)
+
         if skip_blank_lines(line) == True:
             continue
 
