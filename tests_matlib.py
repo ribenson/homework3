@@ -1,6 +1,6 @@
 from nose.tools import assert_equal
 from material_lib import grab_line_info, parse_first_line, parse_elem_frac
-
+from material_lib import create_mat_lib
 
 
 def test_line_parsing():
@@ -36,4 +36,13 @@ def test_p_elem_frac():
             output = parse_elem_frac(line)
             obs = output[2]
             exp = '74'
+    assert_equal(obs,exp)
+
+def test_create_mat_lib():
+    file_name = 'matlib_testing.sample'
+    WALLOY_dict = {}
+
+    output = create_mat_lib(file_name, WALLOY_dict)
+    obs = output['WALLOY']['elemental info']['fe']['mass fraction']
+    exp = '0.73000e+00'
     assert_equal(obs,exp)
